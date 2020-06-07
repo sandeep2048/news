@@ -23,16 +23,16 @@ class NewsPresenter(var view: MainActivity, var context: Context) {
     }
 
 
-    fun loadData() {
+    fun loadData(page: Int) {
 
 
         view.viewModel?.viewModelScope?.launch {
 
-            view.updateView(apiCall())
+            view.updateView(apiCall(page))
         }
     }
 
-    suspend fun apiCall(): List<NewsEntity> {
+    suspend fun apiCall(page: Int): List<NewsEntity> {
 
         return GlobalScope.async(Dispatchers.IO) {
             val db = Room.databaseBuilder(
@@ -40,9 +40,11 @@ class NewsPresenter(var view: MainActivity, var context: Context) {
                 NewsDatabase::class.java, "newsDatabase.db"
             ).build()
             if (isNetworkConnectionAvailable(context)) {
-                val response = sendGET()
+                val response = sendGET(page)
 
-                db.newsDao().deleteAll()
+                if(page==1) {
+                    db.newsDao().deleteAll()
+                }
 
                 var parser = NewsParser()
                 db.newsDao().insertAll(parser.parseResponse(response))
@@ -61,9 +63,9 @@ class NewsPresenter(var view: MainActivity, var context: Context) {
     }
 
     @Throws(IOException::class)
-    private fun sendGET(): String {
+    private fun sendGET(page: Int): String {
         val obj =
-            URL("https://newsapi.org/v2/top-headlines?country=us&apiKey=a40bf45fb5bb487c9e4e179d868516ec")
+            URL("https://newsapi.org/v2/top-headlines?apiKey=a40bf45fb5bb487c9e4e179d868516ec&country=us&page="+page)
         val con: HttpURLConnection = obj.openConnection() as HttpURLConnection
         con.setRequestMethod("GET")
         val responseCode: Int = con.getResponseCode()

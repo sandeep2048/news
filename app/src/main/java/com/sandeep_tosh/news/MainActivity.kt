@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     var recyclerView: RecyclerView? = null
     var newsAdapter:NewsRVAdapter?=null
     var shimmerLayout:LinearLayout?=null
+    var page=1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -51,9 +52,13 @@ class MainActivity : AppCompatActivity() {
         mLayoutManager.orientation = LinearLayoutManager.VERTICAL
         recyclerView?.setLayoutManager(mLayoutManager)
 
-        newsAdapter= NewsRVAdapter(emptyList(),this)
+        newsAdapter= NewsRVAdapter(emptyList(),this, object : OnloadMoreListner {
+            override fun onLoadMore() {
+                presenter.loadData(++page)
+            }
+        })
         recyclerView?.adapter=newsAdapter
-        presenter.loadData()
+        presenter.loadData(page)
 
 
     }
@@ -65,12 +70,14 @@ class MainActivity : AppCompatActivity() {
     }
     fun updateView(response: List<NewsEntity>) {
 
-        var parser = NewsParser()
-      //  var list = parser.parseResponse(response)
+        if(response.size==page*20){
+            newsAdapter?.setLoadMore(true)
+        }else
+        {
+            newsAdapter?.setLoadMore(false)
+        }
         hideLoading()
-
         newsAdapter?.updateList(response)
-      //  newsAdapter?.notifyDataSetChanged()
 
 
     }
