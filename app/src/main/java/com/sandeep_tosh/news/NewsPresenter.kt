@@ -1,27 +1,21 @@
 package com.sandeep_tosh.news
 
 
-import android.util.Log
+import android.content.Context
 import androidx.lifecycle.viewModelScope
+import androidx.room.Room
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import org.apache.http.HttpEntity
-import org.apache.http.HttpHeaders.USER_AGENT
-import org.apache.http.HttpResponse
-import org.apache.http.client.HttpClient
-import org.apache.http.client.methods.HttpGet
-import org.apache.http.impl.client.DefaultHttpClient
 import java.io.BufferedReader
 import java.io.IOException
-import java.io.InputStream
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 
 
-class NewsPresenter(var view: MainActivity) {
+class NewsPresenter(var view: MainActivity,var context:Context) {
 
     init {
         view.presenter = this
@@ -29,17 +23,28 @@ class NewsPresenter(var view: MainActivity) {
 
 
     fun loadData() {
+
+
         view.viewModel?.viewModelScope?.launch {
 
             view.updateView( apiCall())
         }
     }
 
-    suspend fun apiCall(): String {
+    suspend fun apiCall(): List<NewsEntity> {
 
         return GlobalScope.async(Dispatchers.IO) {
             val response = sendGET()
-            return@async response
+            val db = Room.databaseBuilder(
+               context,
+                NewsDatabase::class.java, "newsDatabase.db"
+            ).build()
+            db.newsDao().deleteAll()
+
+            var parser=NewsParser()
+            db.newsDao().insertAll(parser.parseResponse(response))
+            return@async db.newsDao().getAll()
+
         }.await()
 
     }

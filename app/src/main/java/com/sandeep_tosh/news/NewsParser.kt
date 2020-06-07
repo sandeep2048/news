@@ -5,11 +5,11 @@ import org.json.JSONObject
 class NewsParser() {
 
 
-    fun parseResponse( response:String):List<NewsPojo>{
+    fun parseResponse( response:String):List<NewsEntity>{
 
         var jsonObject=JSONObject(response)
 
-        var list= ArrayList<NewsPojo>()
+        var list= ArrayList<NewsEntity>()
         var size:Int=jsonObject.getJSONArray("articles").length()
         for(i in 0..size-1){
             var publisher= jsonObject.getJSONArray("articles").getJSONObject(i).getJSONObject("source").getString("name")
@@ -19,7 +19,7 @@ class NewsParser() {
             var date=jsonObject.getJSONArray("articles").getJSONObject(i).getString("publishedAt")
 
 
-            list.add(NewsPojo(date,title,desc,publisher,urltoImage))
+            list.add(NewsEntity(title,desc,date,publisher,urltoImage))
 
         }
 

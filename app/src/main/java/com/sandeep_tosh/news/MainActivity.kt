@@ -1,6 +1,5 @@
 package com.sandeep_tosh.news
 
-import android.app.PendingIntent.getActivity
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.View
@@ -12,8 +11,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import io.supercharge.shimmerlayout.ShimmerLayout
-import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -27,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        presenter = NewsPresenter(this)
+        presenter = NewsPresenter(this,this)
 
         var toolbar: Toolbar = findViewById(R.id.toolbar)
         var toolbarTextView: TextView = findViewById(R.id.toolbar_title)
@@ -66,16 +63,15 @@ class MainActivity : AppCompatActivity() {
             shimmerLayout?.visibility= View.GONE
             recyclerView?.visibility= View.VISIBLE
     }
-    fun updateView(response: String) {
+    fun updateView(response: List<NewsEntity>) {
 
         var parser = NewsParser()
-        var list = parser.parseResponse(response)
+      //  var list = parser.parseResponse(response)
         hideLoading()
 
-        newsAdapter?.updateList(list)
+        newsAdapter?.updateList(response)
       //  newsAdapter?.notifyDataSetChanged()
 
-        list.size
 
     }
 }

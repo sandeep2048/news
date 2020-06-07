@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.squareup.picasso.Picasso
 
 
-class NewsRVAdapter(var list: List<NewsPojo>, val context:Context) : RecyclerView.Adapter<ViewHolder>() {
+class NewsRVAdapter(var list: List<NewsEntity>, val context:Context) : RecyclerView.Adapter<ViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -23,7 +23,7 @@ class NewsRVAdapter(var list: List<NewsPojo>, val context:Context) : RecyclerVie
         )
     }
 
-    fun updateList( list: List<NewsPojo>){
+    fun updateList(list: List<NewsEntity>){
         this.list=list
         notifyDataSetChanged()
     }
@@ -36,7 +36,7 @@ class NewsRVAdapter(var list: List<NewsPojo>, val context:Context) : RecyclerVie
        var newsHolder:NewsViewHolder = holder as NewsViewHolder
 
         Picasso.with(context)
-            .load(list.get(position).urlToImage).fit()
+            .load(list.get(position).url).fit()
             .into(newsHolder.parent)
       //  newsHolder.parent.scrollTo();
        // newsHolder.parent.setHorizontalFadingEdgeEnabled(true);
