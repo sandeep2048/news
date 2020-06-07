@@ -1,16 +1,21 @@
 package com.sandeep_tosh.news
 
+import android.app.Activity
+import android.app.ActivityOptions
 import android.content.Context
+import android.content.Intent
 import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityOptionsCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.squareup.picasso.Picasso
-
+import android.util.Pair as APair
 
 class NewsRVAdapter(var list: List<NewsEntity>, val context:Context) : RecyclerView.Adapter<ViewHolder>() {
 
@@ -37,10 +42,8 @@ class NewsRVAdapter(var list: List<NewsEntity>, val context:Context) : RecyclerV
 
         Picasso.with(context)
             .load(list.get(position).url).fit()
-            .into(newsHolder.parent)
-      //  newsHolder.parent.scrollTo();
-       // newsHolder.parent.setHorizontalFadingEdgeEnabled(true);
-       // newsHolder.parent.fade(40);
+            .into(newsHolder.image)
+
         newsHolder.date.text=list.get(position).date
         newsHolder.publisher.text=list.get(position).publisher
         newsHolder.tilte.text=list.get(position).title
@@ -58,6 +61,28 @@ class NewsRVAdapter(var list: List<NewsEntity>, val context:Context) : RecyclerV
         )
 
         newsHolder.tilte.typeface = robotoreg
+
+        newsHolder.parent.setOnClickListener(View.OnClickListener {
+            val intent = Intent(context, NewsDetailActivity::class.java)
+            intent.putExtra("title",list.get(position).title)
+            intent.putExtra("url",list.get(position).url)
+            intent.putExtra("date",list.get(position).date)
+            intent.putExtra("publisher",list.get(position).publisher)
+            intent.putExtra("desc",list.get(position).content)
+
+            var t1 = APair(newsHolder.tilte as View, "title")
+            var t2 = APair(newsHolder.date as View, "date")
+            var t3 = APair(newsHolder.publisher as View, "publisher")
+
+            val transitionActivityOptions: ActivityOptions =
+                ActivityOptions.makeSceneTransitionAnimation(
+                    context as Activity,
+                    t1,t2,t3
+                )
+
+
+            context.startActivity(intent,transitionActivityOptions.toBundle())
+        })
     }
 
 
@@ -66,12 +91,14 @@ class NewsRVAdapter(var list: List<NewsEntity>, val context:Context) : RecyclerV
         lateinit var tilte: TextView
         lateinit var date: TextView
         lateinit var publisher: TextView
-        var parent:ImageView
+        var image:ImageView
+        var parent:ConstraintLayout
 
         init {
              tilte = itemView.findViewById(R.id.title)
              date = itemView.findViewById(R.id.date)
              publisher = itemView.findViewById(R.id.publisher)
+            image=itemView.findViewById(R.id.image)
             parent=itemView.findViewById(R.id.parent)
         }
         companion object

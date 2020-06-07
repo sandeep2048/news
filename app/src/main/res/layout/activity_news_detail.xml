@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".NewsDetailActivity">
+<ImageView
+    android:id="@+id/close"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    android:layout_margin="16dp"
+    android:src="@drawable/ic_arrow"
+    android:background="@drawable/ic_circle"
+    android:layout_width="45dp"
+    android:elevation="2dp"
+    android:layout_height="45dp"/>
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="match_parent"
+        android:foreground="@drawable/fade_bg"
+        android:transitionName="ouranimation" />
+    <TextView
+        android:id="@+id/title"
+        android:textSize="29sp"
+        android:text="title"
+        app:layout_constraintBottom_toTopOf="@+id/publisher"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="64dp"
+        android:layout_width="wrap_content"
+        android:textColor="#f2f2f2"
+        android:transitionName="title"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/publisher"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="cnn"
+        app:layout_constraintEnd_toStartOf="@+id/date"
+        android:textSize="20sp"
+        android:textColor="#f2f2f2"
+        android:layout_width="0dp"
+        android:transitionName="publisher"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/content"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="cnn"
+        android:textSize="20sp"
+        android:textColor="#f2f2f2"
+        android:layout_width="0dp"
+        android:transitionName="date"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="15dp"
+        android:text="content"
+        android:textColor="#bababa"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
