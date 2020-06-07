@@ -2,6 +2,7 @@ package com.sandeep_tosh.news
 
 
 import android.content.Context
+import android.net.ConnectivityManager
 import androidx.lifecycle.viewModelScope
 import androidx.room.Room
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +16,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 
-class NewsPresenter(var view: MainActivity,var context:Context) {
+class NewsPresenter(var view: MainActivity, var context: Context) {
 
     init {
         view.presenter = this
@@ -27,26 +28,36 @@ class NewsPresenter(var view: MainActivity,var context:Context) {
 
         view.viewModel?.viewModelScope?.launch {
 
-            view.updateView( apiCall())
+            view.updateView(apiCall())
         }
     }
 
     suspend fun apiCall(): List<NewsEntity> {
 
         return GlobalScope.async(Dispatchers.IO) {
-            val response = sendGET()
             val db = Room.databaseBuilder(
-               context,
+                context,
                 NewsDatabase::class.java, "newsDatabase.db"
             ).build()
-            db.newsDao().deleteAll()
+            if (isNetworkConnectionAvailable(context)) {
+                val response = sendGET()
 
-            var parser=NewsParser()
-            db.newsDao().insertAll(parser.parseResponse(response))
+                db.newsDao().deleteAll()
+
+                var parser = NewsParser()
+                db.newsDao().insertAll(parser.parseResponse(response))
+            }
             return@async db.newsDao().getAll()
 
         }.await()
 
+    }
+
+    fun isNetworkConnectionAvailable(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = connectivityManager.activeNetworkInfo
+        return networkInfo != null && networkInfo.isConnected
     }
 
     @Throws(IOException::class)
