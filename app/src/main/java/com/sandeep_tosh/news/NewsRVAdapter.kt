@@ -5,15 +5,19 @@ import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.squareup.picasso.Picasso
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import android.util.Pair as APair
 
 class NewsRVAdapter(
@@ -77,8 +81,13 @@ class NewsRVAdapter(
             Picasso.with(context)
                 .load(list.get(position).url).fit()
                 .into(newsHolder.image)
-
-            newsHolder.date.text = list.get(position).date
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                var formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+                var date = LocalDate.parse(list.get(position).date, formatter)
+                newsHolder.date.text =date.toString()
+            }else{
+                newsHolder.date.text = list.get(position).date.substring(0,list.get(position).date.indexOf("T"))
+            }
             newsHolder.publisher.text = list.get(position).publisher
             newsHolder.tilte.text = list.get(position).title
 

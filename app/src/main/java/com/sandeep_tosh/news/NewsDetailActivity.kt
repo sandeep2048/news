@@ -2,12 +2,15 @@ package com.sandeep_tosh.news
 
 import android.app.Activity
 import android.media.Image
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.squareup.picasso.Picasso
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class NewsDetailActivity : AppCompatActivity() {
 
@@ -29,7 +32,15 @@ class NewsDetailActivity : AppCompatActivity() {
         desc.text=intent.getStringExtra("desc")
 
         var date:TextView=findViewById(R.id.date)
-        date.text=intent.getStringExtra("date")
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            var formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+            var date1 = LocalDate.parse(intent.getStringExtra("date"), formatter)
+            date.text=date1.toString()
+        }else{
+            date.text=intent.getStringExtra("date").substring(0,intent.getStringExtra("date").indexOf("T"))
+        }
+
 
         var publisher:TextView=findViewById(R.id.publisher)
         publisher.text=intent.getStringExtra("publisher")
