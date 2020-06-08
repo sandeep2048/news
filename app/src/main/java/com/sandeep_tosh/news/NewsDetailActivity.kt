@@ -33,13 +33,9 @@ class NewsDetailActivity : AppCompatActivity() {
 
         var date:TextView=findViewById(R.id.date)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            var formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
-            var date1 = LocalDate.parse(intent.getStringExtra("date"), formatter)
-            date.text=date1.toString()
-        }else{
+
             date.text=intent.getStringExtra("date").substring(0,intent.getStringExtra("date").indexOf("T"))
-        }
+
 
 
         var publisher:TextView=findViewById(R.id.publisher)

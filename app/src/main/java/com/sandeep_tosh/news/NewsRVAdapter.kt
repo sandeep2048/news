@@ -81,13 +81,9 @@ class NewsRVAdapter(
             Picasso.with(context)
                 .load(list.get(position).url).fit()
                 .into(newsHolder.image)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                var formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
-                var date = LocalDate.parse(list.get(position).date, formatter)
-                newsHolder.date.text =date.toString()
-            }else{
+
                 newsHolder.date.text = list.get(position).date.substring(0,list.get(position).date.indexOf("T"))
-            }
+
             newsHolder.publisher.text = list.get(position).publisher
             newsHolder.tilte.text = list.get(position).title
 
