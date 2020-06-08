@@ -93,7 +93,15 @@ class MainActivity : AppCompatActivity() {
                 if (chip != null) {
                     if(isNetworkConnectionAvailable(this)) {
                         showLoading()
-                        presenter.loadData(1, true, chip.text as String)
+                        if(chip.text.equals("America")) {
+                            presenter.loadData(1, true, "us")
+                        }else if(chip.text.equals("United Arab Emirates")) {
+                            presenter.loadData(1, true, "ae")
+                        }else if(chip.text.equals("Argentina")) {
+                            presenter.loadData(1, true, "ar")
+                        }else{
+                            presenter.loadData(1, true, "us")
+                        }
                     }
                     dialog.dismiss()
                 }
