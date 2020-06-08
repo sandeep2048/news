@@ -40,6 +40,7 @@ dependencies {
     implementation 'io.supercharge:shimmerlayout:2.1.0'
     implementation 'org.apache.httpcomponents:httpclient:4.5.6'
     implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.google.android.material:material:1.1.0'
 
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0-alpha03'

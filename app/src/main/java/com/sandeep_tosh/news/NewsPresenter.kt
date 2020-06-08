@@ -3,6 +3,11 @@ package com.sandeep_tosh.news
 
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
+import android.util.Log
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.viewModelScope
 import androidx.room.Room
 import kotlinx.coroutines.Dispatchers
@@ -23,16 +28,19 @@ class NewsPresenter(var view: MainActivity, var context: Context) {
     }
 
 
-    fun loadData(page: Int) {
+    fun loadData(page: Int, country: Boolean, value: String) {
 
 
         view.viewModel?.viewModelScope?.launch {
 
-            view.updateView(apiCall(page))
+            if(!isNetworkConnectionAvailable(context)){
+                Toast.makeText(context,"NO NETWORK CONNECTION",Toast.LENGTH_LONG).show()
+            }
+            view.updateView(apiCall(page,country,value))
         }
     }
 
-    suspend fun apiCall(page: Int): List<NewsEntity> {
+    suspend fun apiCall(page: Int, country: Boolean, value: String): List<NewsEntity> {
 
         return GlobalScope.async(Dispatchers.IO) {
             val db = Room.databaseBuilder(
@@ -40,7 +48,7 @@ class NewsPresenter(var view: MainActivity, var context: Context) {
                 NewsDatabase::class.java, "newsDatabase.db"
             ).build()
             if (isNetworkConnectionAvailable(context)) {
-                val response = sendGET(page)
+                val response = sendGET(page,country,value)
 
                 if(page==1) {
                     db.newsDao().deleteAll()
@@ -55,6 +63,7 @@ class NewsPresenter(var view: MainActivity, var context: Context) {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     fun isNetworkConnectionAvailable(context: Context): Boolean {
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -63,9 +72,17 @@ class NewsPresenter(var view: MainActivity, var context: Context) {
     }
 
     @Throws(IOException::class)
-    private fun sendGET(page: Int): String {
+    private fun sendGET(page: Int, country: Boolean, value: String): String {
+
+        var data:String
+        if(country){
+            data="&country="+value
+        }else{
+            data="&category="+value
+        }
+        Log.d("url_news","https://newsapi.org/v2/top-headlines?apiKey=a40bf45fb5bb487c9e4e179d868516ec"+data+"&page="+page)
         val obj =
-            URL("https://newsapi.org/v2/top-headlines?apiKey=a40bf45fb5bb487c9e4e179d868516ec&country=us&page="+page)
+            URL("https://newsapi.org/v2/top-headlines?apiKey=a40bf45fb5bb487c9e4e179d868516ec"+data+"&page="+page)
         val con: HttpURLConnection = obj.openConnection() as HttpURLConnection
         con.setRequestMethod("GET")
         val responseCode: Int = con.getResponseCode()
@@ -84,12 +101,12 @@ class NewsPresenter(var view: MainActivity, var context: Context) {
             `in`.close()
             // print result
             return response.toString()
-            println("madworld" + response.toString())
         } else {
             return ""
-            println("GET request not worked")
         }
     }
+
+
 
 
 }
